@@ -28,5 +28,9 @@
     "react/prop-types": [2, {
       "ignore": ["dispatch"]
     }]
+  },
+  "globals": {
+    "it": true,
+    "expect": true
   }
 }

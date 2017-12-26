@@ -15,11 +15,11 @@ export default class MasonryInfiniteScroller extends Component {
     packed: PropTypes.string,
     pageStart: PropTypes.number,
     position: PropTypes.bool,
-    sizes: PropTypes.array,
+    sizes: PropTypes.arrayOf(PropTypes.object),
     style: PropTypes.object,
     threshold: PropTypes.number,
     useWindow: PropTypes.bool
-  }
+  };
 
   static defaultProps = {
     className: '',
@@ -32,45 +32,38 @@ export default class MasonryInfiniteScroller extends Component {
       { mq: '1024px', columns: 3, gutter: 20 }
     ],
     style: {}
-  }
+  };
 
-  constructor(props) {
-    super(props)
-    const { packed, sizes, position } = this.props;
-    const instance = Bricks({
-      container: this.masonryContainer,
-      packed: packed,
-      sizes: sizes,
-      position: position
-    });
-    this.state = {
-      instance
-    }
-  }
+  state = {
+    instance: undefined
+  };
 
   componentDidMount() {
-    const { children } = this.props;
+    const { packed, children, sizes, position } = this.props;
     const { instance } = this.state;
-
-    instance.resize(true);
-
+    this.setState({ // eslint-disable-line
+      instance: Bricks({
+        container: this.masonryContainer,
+        packed,
+        sizes,
+        position
+      })
+    });
+    instance && instance.resize(true);
     if (children.length > 0) {
-      instance.pack();
+      instance && instance.pack();
     }
   }
 
   componentDidUpdate(prevProps) {
     const { children } = this.props;
     const { instance } = this.state;
-
     if (prevProps.children.length === 0 && children.length === 0) {
       return;
     }
-
     if (prevProps.children.length === 0 && children.length > 0) {
       return instance.pack();
     }
-
     if (prevProps.children.length !== children.length) {
       if (this.props.pack) {
         return instance.pack();
@@ -81,24 +74,26 @@ export default class MasonryInfiniteScroller extends Component {
   }
 
   componentWillUnmount() {
-    this.state.instance.resize(false);
+    if (this.state.instance) {
+      this.state.instance.resize(false);
+    }
   }
 
-  setContainerRef = (component) => {
+  setContainerRef = component => {
     this.masonryContainer = component;
-  }
+  };
 
   forcePack = () => {
     if (this.masonryContainer) {
       this.state.instance.pack();
     }
-  }
+  };
 
   forceUpdate = () => {
     if (this.masonryContainer) {
       this.state.instance.update();
     }
-  }
+  };
 
   render() {
     const {
