@@ -1,6 +1,6 @@
-import React from 'react'
-import renderer from 'react-test-renderer'
-import ReactMasonryInfinite from '../src'
+import React from 'react';
+import renderer from 'react-test-renderer';
+import ReactMasonryInfinite from '../src';
 
 function createNodeMock(element) {
   if (element.type === 'div' && element.props.className === 'layout') {
@@ -11,7 +11,7 @@ function createNodeMock(element) {
 
 it('ReactMasonryInfinite correctly render', () => {
   const arrayForChildrens = [1, 2, 3, 4, 5, 6]
-  const AdditionalSnapshot = renderer
+  const tree = renderer
     .create(
       (
         <ReactMasonryInfinite
@@ -28,5 +28,5 @@ it('ReactMasonryInfinite correctly render', () => {
       { createNodeMock }
     )
     .toJSON()
-  expect(AdditionalSnapshot).toMatchSnapshot()
-})
+  expect(tree).toMatchSnapshot()
+});
